@@ -1,0 +1,28 @@
+{
+	"source": "du",
+	"year": 2024,
+	"position": 1,
+	"publicationUrl": "https://www.dziennikustaw.gov.pl/DU/2024/1",
+	"pdfUrl": "https://www.dziennikustaw.gov.pl/D2024000000101.pdf",
+	"filename": "D2024000000101.pdf",
+	"retrievedAt": "2026-10-24T21:39:28.020Z",
+	"sha256": "33269eb47a4b6d85dd1cc668dd5fb3c46d3530500c7655603266e0092c33e1ed",
+	"pageCount": 8,
+	"reviewedAt": "2026-10-24",
+	"manuallyVerifiedFeatures": [
+		{
+			"pages": [
+				1
+			],
+			"feature": "Large first-page gazette masthead; single-column legal body; bold title and section numbers; Polish diacritics."
+		},
+		{
+			"pages": [
+				8
+			],
+			"feature": "Recurring gazette/position/page header; short horizontal separator with smaller multiline footnote below; superscript footnote reference and italic signature."
+		}
+	],
+	"reviewMethod": "Visual inspection of MuPDF PNGs at 120 DPI, checked against extracted text and vector coordinates; selected pages only.",
+	"backendWarnings": []
+}

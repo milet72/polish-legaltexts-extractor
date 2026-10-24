@@ -1,0 +1,21 @@
+{
+	"name": "polish-legaltexts-extractor",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"description": "MuPDF-based development tools for Polish official gazette extraction",
+	"license": "MIT",
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"test": "node --test",
+		"inspect:pdf": "node scripts/inspect-pdf.js",
+		"fetch:fixture": "node scripts/fetch-fixture.js"
+	},
+	"dependencies": {
+		"mupdf": "1.28.1",
+		"parse5": "7.3.0",
+		"undici": "6.29.1"
+	}
+}

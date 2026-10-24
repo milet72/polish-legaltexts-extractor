@@ -2,7 +2,81 @@
 
 Implementation specification for a Node.js 20 command-line utility that retrieves and processes electronically published PDFs from **Dziennik Ustaw** and **Monitor Polski**.
 
-**Status:** specification only; implementation has not started. The source documents' exact layouts and the availability/quality of their PDF structure tags have not yet been validated against a representative corpus. Algorithms below are requirements and testable hypotheses, not claims of perfect extraction.
+**Status:** initial MuPDF backend and development tools implemented; the legal-text extractor is not yet implemented. Node.js 20 integration is tested with synthetic PDFs and official DU/MP fixtures (8 and 24 pages). Selected fixture pages have been visually reviewed. The extraction algorithms below remain requirements, not claims of coverage.
+
+## Development quick start
+
+Requires Node.js 20 or later and npm; validation uses Node.js 20.20.2.
+No system PDF tools, Python, browser, OCR, API key, or native build is required.
+
+```sh
+npm ci
+npm test
+
+# End-to-end backend demonstration (use new output paths each time):
+node scripts/create-demo.js /tmp/legaltexts-demo.pdf
+npm run inspect:pdf -- /tmp/legaltexts-demo.pdf /tmp/legaltexts-page1
+npm run inspect:pdf -- /tmp/legaltexts-demo.pdf /tmp/legaltexts-page2 2 300
+```
+
+The synthetic two-page PDF contains Polish text, bold and italic fonts, raised
+and lowered small text, an underline, a grid, a short horizontal separator,
+and a red square on page 2. The inspector writes a PNG plus `inspection.json`
+with page/line provenance, character origins and quadrilaterals, font attributes,
+vector paths, SHA-256, render metadata and elapsed time. It inspects one selected
+physical page; it does not classify paragraphs, footnotes, tables, or annexes.
+The output directory must not already exist. Metadata is written last; a failed
+write may leave an incomplete diagnostic directory, but never overwrites one.
+
+Fetch additional official documents:
+
+```sh
+npm run fetch:fixture -- du /tmp/du-2024-1 2024 1
+npm run fetch:fixture -- mp /tmp/mp-2024-1 2024/1
+```
+
+These commands discover the PDF link from the publication HTML, retain its actual
+filename, verify it opens as a PDF, and save retrieval metadata. The primary-file
+rule, verified on DU/2024/1 and MP/2024/1, requires exactly one distinct official
+PDF beneath the publication page's URL path. Site-wide links such as the privacy
+policy are excluded. Zero or multiple publication attachments cause an error;
+alternative attachment layouts remain unsupported. Review the downloaded documents
+and fill in `reviewedAt` and `manuallyVerifiedFeatures` before treating them as
+annotated fixtures. The destination must be a new directory.
+
+Dependencies are pinned in `package-lock.json`: official `mupdf` 1.28.1
+(WebAssembly), `parse5` for HTML parsing, and `undici` for HTTPS requests that
+respect `HTTPS_PROXY`, `HTTP_PROXY` and `NO_PROXY` on Node.js 20. Downloads and
+every redirect are restricted to HTTPS on the selected gazette's exact bare/www
+hostnames. Both gazettes' observed HTTP root-file PDF redirects are upgraded to
+the same host's verified HTTPS equivalent before requesting; no HTTP request is
+made. No cross-domain redirect is approved yet. TLS verification remains on.
+Limits live in `src/limits.js`: 64 MiB/PDF, 2 MiB/HTML, 500 pages,
+25 million pixels/render, bounded geometry, 30 seconds/request and five redirects.
+These bound ordinary inputs; MuPDF's synchronous WASM parsing is not a hardened
+process sandbox or a strict CPU/memory deadline for hostile PDFs.
+
+The backend currently preserves visual lines, not logical paragraphs. Bold and
+italic are font properties; underline, superscript and subscript detection are
+future classification stages. Raw paint paths may be hidden or clipped and are
+never labeled as footnotes/tables just because they are horizontal.
+PNG output is opaque, 8-bit grayscale when every rendered RGB pixel is neutral,
+otherwise 24-bit RGB. Any chroma retains RGB, preserving subtle visible color.
+See [the backend proof of concept](docs/mupdf-poc.md) for evidence and limitations.
+
+Tests run offline against committed official PDFs and generated backend fixtures.
+Fixture metadata records hashes, URLs, page counts and selected visual checks.
+MuPDF warns about a truncated flate stream on MP physical page 4; that warning
+remains visible and is recorded in metadata. Successful backend traversal is not
+an assertion of lossless extraction from that page.
+
+**Licensing:** this repository's own code remains MIT-licensed. MuPDF is
+AGPL-3.0-or-later or commercially licensed by Artifex. The MIT license does not
+relicense MuPDF or make the combined distribution MIT-only; deployments and
+redistribution must comply with the applicable MuPDF license.
+
+The `get-du` and `get-mp` examples below describe the target interface. Those
+commands and final legal-text output are not shipped in this first backend step.
 
 ## CLI
 

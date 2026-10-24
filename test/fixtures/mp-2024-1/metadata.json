@@ -1,0 +1,30 @@
+{
+	"source": "mp",
+	"year": 2024,
+	"position": 1,
+	"publicationUrl": "https://www.monitorpolski.gov.pl/MP/2024/1",
+	"pdfUrl": "https://www.monitorpolski.gov.pl/M2024000000101.pdf",
+	"filename": "M2024000000101.pdf",
+	"retrievedAt": "2026-10-24T21:39:31.274Z",
+	"sha256": "82140ae34e1279d62252a5d3efdb4a1b76c2eabc52bd2321478382b180af9882",
+	"pageCount": 24,
+	"reviewedAt": "2026-10-24",
+	"manuallyVerifiedFeatures": [
+		{
+			"pages": [
+				3
+			],
+			"feature": "Annex begins on a dedicated physical page with top-right Załącznik heading and large centered program title."
+		},
+		{
+			"pages": [
+				10
+			],
+			"feature": "Within annex: bordered 7-column, 4-row table including header and blank top-left cell; wrapped row labels; body text below table; additional annex-relative page number 8 at bottom."
+		}
+	],
+	"reviewMethod": "Visual inspection of MuPDF PNGs at 120 DPI, checked against extracted text and vector coordinates; selected pages only.",
+	"backendWarnings": [
+		"MuPDF emitted premature end of data in flate filter while inspecting physical page 4; original downloaded bytes retained. Not treated as complete extraction ground truth."
+	]
+}
